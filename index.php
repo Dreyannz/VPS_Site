@@ -229,7 +229,7 @@ if (isset($_POST['user']))
 												<option disabled selected value>Select Server</option> 
 
 
-													<optgroup label="Singapore AWS (5 Days) ">
+													<optgroup label="My List OF Servers">
 														<?php
 														for ($row = 1; $row < 101; $row++)
 														{
