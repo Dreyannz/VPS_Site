@@ -19,11 +19,11 @@ $server_lists_array=array(
 
 /* Service Variables */
 	
-$port_ssh= '22, 143'; 									// SSH Ports
-$port_dropbear= '443, 110'; 							// Dropbear Ports
-$port_ssl= 'n/a'; 										// SSL Ports
-$port_squid= '3128, 8080, 8888'; 						// Squid Ports
-$ovpn_client= ''.$hosts.'/client.ovpn';					// OpenVPN Client Config
+$port_ssh= '22, 143'; 				// SSH Ports
+$port_dropbear= '443, 110'; 			// Dropbear Ports
+$port_ssl= 'n/a'; 				// SSL Ports
+$port_squid= '3128, 8080, 8888'; 		// Squid Ports
+$ovpn_client= ''.$hosts.'/client.ovpn';		// OpenVPN Client Config
 
 
 /* Dont Edit Anything After This Line*/
