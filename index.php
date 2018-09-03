@@ -88,7 +88,7 @@ if (isset($_POST['user']))
 				if (ssh2_auth_password($connection, 'root', $root_pass)) 
 					{
 						$show = true;	 
-						ssh2_exec($connection, "useradd $username -m -p $password -e $datess -d  /home/$username -s /bin/false");
+						ssh2_exec($connection, "useradd $username -m -p $password -e $datess -d  /tmp/$username -s /bin/false");
 						$succ = 'Added Succesfully';
 						if ($res) 
 							{
