@@ -1,8 +1,9 @@
 <?php
 /* Site Data */
+
 $site_name        = "LadyClare";
 $site_description = "Provider of Quality SSH, SSL, VPN Accounts";
-$site_template    = "lumen"; // (flatly, darkly, sketchy, lumen, materia)
+$site_template    = "lumen";
 
 /* Server Data */
 /* Format: Server_Name, IP_Address, Root_Pass, Account_Validity */
