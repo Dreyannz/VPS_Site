@@ -7,18 +7,20 @@
 <p align="center">The 2nd Is Much More Complicated In Which Separates VIP Users From Free Users.</p>
 
 <h3 align="center">Installation</h3>
-<p align="center">apt-get update</p>
-<p align="center">apt-get install apache2 -y</p>
-<p align="center">apt-get install libssh2-php -y</p>
-<p align="center">service apache2 restart</p>
+<h4 align="center"><img src="https://img.shields.io/badge/Version-1.0-blue.svg"></h4>
+  <p align="center">wget -O version1.sh https://git.io/fAREv</p>
+  <p align="center">chmod +x version1.sh</p>
+  <p align="center">./version1.sh</p>
+  
+  
 
-1. 
-2. 
-3. 
-4. 
+  
+<h4 align="center"><img src="https://img.shields.io/badge/Version-2.0-blue.svg"></h4>
+ <p align="center">wget -O version1.sh https://git.io/fAREk</p>
+  <p align="center">chmod +x version1.sh</p>
+  <p align="center">./version1.sh</p>
 
 
 
-<img src="https://img.shields.io/badge/Build-1.0-blue.svg">
 
-<img src="https://img.shields.io/badge/Build-2.0-blue.svg">
+
