@@ -3,7 +3,7 @@ $site_name        = "LadyClare";
 $site_description = "Provider of Quality SSH, SSL, VPN Accounts";
 $site_template    = "lumen";
 
-$daily_limit_user = "30";
+$daily_limit_user = "50";
 
 $server_lists_array=array(
 	1=>array(1=>"Singapore AWS","13.251.88.112","LadyClare","5"),
