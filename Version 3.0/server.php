@@ -4,13 +4,12 @@ $site_description = "Provider of Quality SSH, SSL, VPN Accounts";
 $site_template    = "lumen";
 
 $daily_limit_user = "30";
+
 $server_lists_array=array(
 	1=>array(1=>"Singapore AWS","13.251.88.112","LadyClare","5"),
 	2=>array(1=>"Germany AWS","18.184.9.161","LadyClare","5"),
 	3=>array(1=>"London AWS","18.130.94.241","LadyClare","5"),
-	4=>array(1=>"Korea AWS","13.124.67.77","LadyClare","5"),
-	5=>array(1=>"Japan AWS","13.231.66.162","LadyClare","5"),
-	6=>array(1=>"USA AWS","52.38.0.103","LadyClare","5"),
+
 );
 
 /* Service Variables */
