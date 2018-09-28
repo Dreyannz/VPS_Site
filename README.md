@@ -7,7 +7,6 @@
 <p align="center">The 2nd Is Much More Complicated In Which Separates VIP Users From Free Users.</p>
 
 <h3 align="center">Installation</h3>
-<h4 align="center"><img src="https://img.shields.io/badge/Version-1.0-blue.svg"></h4>
   <p align="center">wget https://raw.githubusercontent.com/Dreyannz/VPS_Site/master/vps_site.sh</p>
   <p align="center">chmod +x vps_site.sh</p>
   <p align="center">./vps_site.sh</p>
