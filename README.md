@@ -12,6 +12,11 @@
   <p align="center">./vps_site.sh</p>
   
 
+
+
+[![Youtube Video Tutorial](https://img.youtube.com/vi/NBFft7OgJEU/0.jpg)](https://youtu.be/NBFft7OgJEU)
+
+
 <h3 align="center">Screenshots</h3>
 <p align="center">
 <img src="https://raw.githubusercontent.com/Dreyannz/VPS_Site/master/Screenshots/1.JPG">
