@@ -14,7 +14,7 @@
 
 <h3 align="center">Youtube Video</h3>
 <p align="center">
-[![Youtube Video Tutorial](https://img.youtube.com/vi/NBFft7OgJEU/0.jpg)](https://youtu.be/NBFft7OgJEU)
+https://youtu.be/NBFft7OgJEU
 </p>
 
 <h3 align="center">Screenshots</h3>
