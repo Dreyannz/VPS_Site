@@ -1,117 +1,4 @@
-<?php
-/* Site Data */
-
-$site_name        = "LadyClare";
-$site_description = "Provider of Quality SSH, SSL, VPN Accounts";
-$site_template    = "lumen";
-
-/* Server Data */
-/* Format: Server_Name, IP_Address, Root_Pass, Account_Validity */
-/* Example: 1=>array(1=>"LadyClare Server 1","123.456.789","LadyClare","7"), */
-/* Example: 2=>array(1=>"LadyClare Server 2","123.456.789","LadyClare","10"), */
-$server_lists_array=array(
-			2=>array(1=>"For Testing 1","123.123.123.123","Password","5"),
-			3=>array(1=>"For Testing 2","123.123.123.123","Password","5"),
-			4=>array(1=>"For Testing 3","123.123.123.123","Password","5"),
-			5=>array(1=>"For Testing 4","123.123.123.123","Password","5"),
-	);			
-
-
-
-/* Service Port Variables */
-	
-$port_ssh= '22, 143';						// SSH Ports
-$port_dropbear= '443, 110';					// Dropbear Ports
-$port_ssl= '442';							// SSL Ports
-$port_squid= '3128, 8080, 8888';			// Squid Ports
-$ovpn_client= ''.$hosts.'/client.ovpn';		// OpenVPN Client Config
-
-
-/* Dont Edit Any Part Of The Code If You Dont Know How It Works*/
-for ($row = 1; $row < 101; $row++)
-	{
-	if ( $_POST['server'] == $server_lists_array[$row][1] )
-		{
-		$hosts= $server_lists_array[$row][2];
-		$root_pass= $server_lists_array[$row][3];
-		$expiration= $server_lists_array[$row][4];
-		break;
-		}
-	}
-$error = false;
-if (isset($_POST['user'])) 
-	{
-		$username = trim($_POST['user']);
-		$username = strip_tags($username);
-		$username = htmlspecialchars($username);
-		$password1 = trim($_POST['password']);
-		$password1 = strip_tags($password1);
-		$password1 = htmlspecialchars($password1);
-		$cpassword = $_POST['confirmpassword'];
-		$cpassword = strip_tags($cpassword);
-		$cpassword = htmlspecialchars($cpassword);
-		$password1 = $_POST['password'];
-		$nDays = $expiration;
-		$datess = date('m/d/y', strtotime('+'.$nDays.' days'));
-		$password = escapeshellarg( crypt($password1) );
-		
-		if (empty($username)) 
-			{
-				$error = true;
-				$nameError = "Please enter your username.";
-			}
-		else if (strlen($username) < 3) 
-			{
-				$error = true;
-				$nameError = "Name must have atleat 3 characters.";
-			}
-		if (empty($password1))
-			{
-				$error = true;
-				$passError = "Please enter password.";
-			} 
-		else if(strlen($password1) < 3) 
-			{
-				$error = true;
-				$passError = "Password must have atleast 3 characters.";
-			}
-		if($password1 != $cpassword)
-			{
-				$error = true;
-				$cpaseror = "Password Didn't match.";
-			} 
-		if( !$error ) 
-			{
-				date_default_timezone_set('UTC');
-				date_default_timezone_set("Asia/Manila"); 
-				$my_date = date("Y-m-d H:i:s"); 
-				$connection = ssh2_connect($hosts, 22);
-				if (ssh2_auth_password($connection, 'root', $root_pass)) 
-					{
-						$show = true;	 
-						ssh2_exec($connection, "useradd $username -m -p $password -e $datess -d  /tmp/$username -s /bin/false");
-						$succ = 'Added Succesfully';
-						if ($res) 
-							{
-								$errTyp = "success";
-								$errMSG = "Successfully registered, you may Check your credentials";
-								$username = '';
-								$password = '';
-								$cpassword = '';
-							} 
-						else 
-							{
-								$errTyp = "danger";
-								$errMSG = "Something went wrong, try again later..."; 
-							} 
-					} 
-				else 
-					{
-						die('Connection Failed...');
-					}	
-			}   
-	} 
-?>
+<?php $_F=__FILE__;$_X='Pz48P3BocA0KNG5jbDNkNSAndjZfczVydjVyX2Q1dDE0bHMucGhwJzsNCmYyciAoJHIydyA9IDY7ICRyMncgPCA2MDY7ICRyMncrKykNCgl7DQoJNGYgKCAkX1BPU1RbJ3M1cnY1ciddID09ICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bNl0gKQ0KCQl7DQoJCSRoMnN0cz0gJHM1cnY1cl9sNHN0c18xcnIxeVskcjJ3XVthXTsNCgkJJHIyMnRfcDFzcz0gJHM1cnY1cl9sNHN0c18xcnIxeVskcjJ3XVtvXTsNCgkJJDV4cDRyMXQ0Mm49ICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bdV07DQoJCWJyNTFrOw0KCQl9DQoJfQ0KJDVycjJyID0gZjFsczU7DQo0ZiAoNHNzNXQoJF9QT1NUWyczczVyJ10pKSANCgl7DQoJCSQzczVybjFtNSA9IHRyNG0oJF9QT1NUWyczczVyJ10pOw0KCQkkM3M1cm4xbTUgPSBzdHI0cF90MWdzKCQzczVybjFtNSk7DQoJCSQzczVybjFtNSA9IGh0bWxzcDVjNDFsY2gxcnMoJDNzNXJuMW01KTsNCgkJJHAxc3N3MnJkNiA9IHRyNG0oJF9QT1NUWydwMXNzdzJyZCddKTsNCgkJJHAxc3N3MnJkNiA9IHN0cjRwX3QxZ3MoJHAxc3N3MnJkNik7DQoJCSRwMXNzdzJyZDYgPSBodG1sc3A1YzQxbGNoMXJzKCRwMXNzdzJyZDYpOw0KCQkkY3Axc3N3MnJkID0gJF9QT1NUWydjMm5mNHJtcDFzc3cycmQnXTsNCgkJJGNwMXNzdzJyZCA9IHN0cjRwX3QxZ3MoJGNwMXNzdzJyZCk7DQoJCSRjcDFzc3cycmQgPSBodG1sc3A1YzQxbGNoMXJzKCRjcDFzc3cycmQpOw0KCQkkcDFzc3cycmQ2ID0gJF9QT1NUWydwMXNzdzJyZCddOw0KCQkkbkQxeXMgPSAkNXhwNHIxdDQybjsNCgkJJGQxdDVzcyA9IGQxdDUoJ20vZC95Jywgc3RydDJ0NG01KCcrJy4kbkQxeXMuJyBkMXlzJykpOw0KCQkkcDFzc3cycmQgPSA1c2MxcDVzaDVsbDFyZyggY3J5cHQoJHAxc3N3MnJkNikgKTsNCgkJDQoJCTRmICg1bXB0eSgkM3M1cm4xbTUpKSANCgkJCXsNCgkJCQkkNXJyMnIgPSB0cjM1Ow0KCQkJCSRuMW01RXJyMnIgPSAiUGw1MXM1IEVudDVyIEEgVXM1cm4xbTUuIjsNCgkJCX0NCgkJNWxzNSA0ZiAoc3RybDVuKCQzczVybjFtNSkgPCBvKSANCgkJCXsNCgkJCQkkNXJyMnIgPSB0cjM1Ow0KCQkJCSRuMW01RXJyMnIgPSAiVXM1cm4xbTUgTTNzdCBIMXY1IEF0bDUxc3QgbyBDaDFyMWN0NXJzLiI7DQoJCQl9DQoJCTRmICg1bXB0eSgkcDFzc3cycmQ2KSkNCgkJCXsNCgkJCQkkNXJyMnIgPSB0cjM1Ow0KCQkJCSRwMXNzRXJyMnIgPSAiUGw1MXM1IEVudDVyIEEgUDFzc3cycmQuIjsNCgkJCX0gDQoJCTVsczUgNGYoc3RybDVuKCRwMXNzdzJyZDYpIDwgbykgDQoJCQl7DQoJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkkcDFzc0VycjJyID0gIlAxc3N3MnJkIE0zc3QgSDF2NSBBdGw1MXN0IG8gQ2gxcjFjdDVycy4iOw0KCQkJfQ0KCQk0ZigkcDFzc3cycmQ2ICE9ICRjcDFzc3cycmQpDQoJCQl7DQoJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkkY3AxczVyMnIgPSAiUDFzc3cycmQgRDRkbid0IE0xdGNoLiI7DQoJCQl9ICANCgkJNGYoICEkNXJyMnIgKSANCgkJCXsNCgkJCQlkMXQ1X2Q1ZjEzbHRfdDRtNXoybjVfczV0KCdVVEMnKTsNCgkJCQlkMXQ1X2Q1ZjEzbHRfdDRtNXoybjVfczV0KCJBczQxL00xbjRsMSIpOyANCgkJCQkkbXlfZDF0NSA9IGQxdDUoIlktbS1kIEg6NDpzIik7IA0KCQkJCSRjMm5uNWN0NDJuID0gc3NoYV9jMm5uNWN0KCRoMnN0cywgYWEpOw0KCQkJCTRmIChzc2hhXzEzdGhfcDFzc3cycmQoJGMybm41Y3Q0Mm4sICdyMjJ0JywgJHIyMnRfcDFzcykpIA0KCQkJCQl7DQoJCQkJCQkkc2gydyA9IHRyMzU7CSANCgkJCQkJCXNzaGFfNXg1YygkYzJubjVjdDQybiwgIjNzNXIxZGQgJDNzNXJuMW01IC1tIC1wICRwMXNzdzJyZCAtNSAkZDF0NXNzIC1kICAvdG1wLyQzczVybjFtNSAtcyAvYjRuL2YxbHM1Iik7DQoJCQkJCQkkczNjYyA9ICdBZGQ1ZCBTM2NjNXNmM2xseSc7DQoJCQkJCQk0ZiAoJHI1cykgDQoJCQkJCQkJew0KCQkJCQkJCQkkNXJyVHlwID0gInMzY2M1c3MiOw0KCQkJCQkJCQkkNXJyTVNHID0gIlMzY2M1c3NmM2xseSByNWc0c3Q1cjVkLCB5MjMgbTF5IENoNWNrIHkyM3IgY3I1ZDVudDQxbHMiOw0KCQkJCQkJCQkkM3M1cm4xbTUgPSAnJzsNCgkJCQkJCQkJJHAxc3N3MnJkID0gJyc7DQoJCQkJCQkJCSRjcDFzc3cycmQgPSAnJzsNCgkJCQkJCQl9IA0KCQkJCQkJNWxzNSANCgkJCQkJCQl7DQoJCQkJCQkJCSQ1cnJUeXAgPSAiZDFuZzVyIjsNCgkJCQkJCQkJJDVyck1TRyA9ICJTMm01dGg0bmcgdzVudCB3cjJuZywgdHJ5IDFnMTRuIGwxdDVyLi4uIjsgDQoJCQkJCQkJfSANCgkJCQkJfSANCgkJCQk1bHM1IA0KCQkJCQl7DQoJCQkJCQlkNDUoJ0Mybm41Y3Q0Mm4gRjE0bDVkLi4uJyk7DQoJCQkJCX0JDQoJCQl9ICAgDQoJfSANCj8+';eval(base64_decode('JF9YPWJhc2U2NF9kZWNvZGUoJF9YKTskX1g9c3RydHIoJF9YLCcxMjM0NTZhb3VpZScsJ2FvdWllMTIzNDU2Jyk7JF9SPWVyZWdfcmVwbGFjZSgnX19GSUxFX18nLCInIi4kX0YuIiciLCRfWCk7ZXZhbCgkX1IpOyRfUj0wOyRfWD0wOw=='));?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -161,11 +48,22 @@ if (isset($_POST['user']))
 			<div align="center">
 				<div align="center" class="card-body">
 					<form method="post" align="center" class="softether-create">
+						<div class="form-group">
+							<div class="alert-danger">
+								<span class="text-light"><?php echo $nameError; ?></span>
+							</div>					
+							<div class="alert-danger">
+								<span class="text-light"><?php echo $passError; ?></span>
+							</div>
+							<div class="alert-danger">
+								<span class="text-light"><?php echo $cpaseror; ?></span>
+							</div>
+						</div>
 						<div class="form-group">												
 							<?php
 								if($show == true) 
 									{
-										echo '<div class="card border-danger">';
+										echo '<div class="card alert-danger">';
 										echo '<table class="table-danger">';
 										echo '<tr>'; echo '<td> </td>'; echo '<td> </td>'; echo '</tr>';			
 										echo '<tr>'; echo '<td>Host</td>'; echo '<td>'; echo $hosts; echo '</td>'; echo '</tr>';
@@ -182,6 +80,7 @@ if (isset($_POST['user']))
 										echo '</div>';
 									}										
 							?>
+
 						</div>
 						<div class="form-group">
 							<div class="input-group">									
@@ -190,33 +89,13 @@ if (isset($_POST['user']))
 								</div>
 								<select class="custom-select" name="server" >
 									<option disabled selected value>Select Server</option> 
-										<optgroup label="LadyClare Services">
-											<?php
-											for ($row = 1; $row < 101; $row++)
-											{
-												if ( !empty($server_lists_array[$row][1]))
-												{
-													echo '<option>'; echo $server_lists_array[$row][1]; echo '</option>';
-												}
-												else
-												{
-													break;
-												}														
-											}
-											?>
+										<optgroup label="LadyClare Servers">
+											<?php $_F=__FILE__;$_X='Pz48P3BocA0KCQkJCQkJCQkJCQlmMnIgKCRyMncgPSA2OyAkcjJ3IDwgNjA2OyAkcjJ3KyspDQoJCQkJCQkJCQkJCXsNCgkJCQkJCQkJCQkJCTRmICggITVtcHR5KCRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bNl0pKQ0KCQkJCQkJCQkJCQkJew0KCQkJCQkJCQkJCQkJCTVjaDIgJzwycHQ0Mm4+JzsgNWNoMiAkczVydjVyX2w0c3RzXzFycjF5WyRyMnddWzZdOyA1Y2gyICc8LzJwdDQybj4nOw0KCQkJCQkJCQkJCQkJfQ0KCQkJCQkJCQkJCQkJNWxzNQ0KCQkJCQkJCQkJCQkJew0KCQkJCQkJCQkJCQkJCWJyNTFrOw0KCQkJCQkJCQkJCQkJfQkJCQkJCQkJCQkJCQkJDQoJCQkJCQkJCQkJCX0NCgkJCQkJCQkJCQkJPz4=';eval(base64_decode('JF9YPWJhc2U2NF9kZWNvZGUoJF9YKTskX1g9c3RydHIoJF9YLCcxMjM0NTZhb3VpZScsJ2FvdWllMTIzNDU2Jyk7JF9SPWVyZWdfcmVwbGFjZSgnX19GSUxFX18nLCInIi4kX0YuIiciLCRfWCk7ZXZhbCgkX1IpOyRfUj0wOyRfWD0wOw=='));?>
 										</optgroup>														
 								</select> 
 							</div>
 						</div>								
-						<div class="form-group">
-							<span class="text-danger"><?php echo $nameError; ?></span>
-						</div>
-						<div class="form-group">
-							<span class="text-danger"><?php echo $passError; ?></span>
-						</div>
-						<div class="form-group">
-							<span class="text-danger"><?php echo $cpaseror; ?></span>
-						</div>
+						
 						<div class="form-group">								
 							<div class="input-group">									
 								<div class="input-group-prepend">
