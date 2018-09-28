@@ -1,178 +1,4 @@
-<?php
-/* Site Data */
-/* invite_code_master is the Invite Code that the VIP Users will be using on the site */
-/* free_user_exp is the active days for Free Users */
-/* vip_user_exp is the active days for VIP Users */
-
-$site_name        = "LadyClare";
-$site_description = "Provider of Quality SSH, SSL, VPN Accounts";
-$site_template    = "lumen";
-$invite_code_master = "LadyClare";
-$free_user_exp = "3";
-$vip_user_exp = "15";
-
-
-/* Server Data */
-/* Format: Server_Name, IP_Address, Root_Pass, User_Type */
-/* Example_1: 1=>array(1=>"LadyClare Server 1","123.456.789","LadyClare","VIP"), */
-/* Example_2: 2=>array(1=>"LadyClare Server 2","123.456.789","Dreyannz","Free"), */
-
-$server_lists_array=array(
-			1=>array(1=>"For Testing 1","123.123.123.123","Password","Free"),
-			2=>array(1=>"For Testing 2","123.123.123.123","Password","VIP"),
-			3=>array(1=>"For Testing 3","123.123.123.123","Password","VIP"),
-			4=>array(1=>"For Testing 4","123.123.123.123","Password","Free"),
-	);			
-
-
-
-/* Service Ports Variables */
-	
-$port_ssh= '22, 143, 81';					// SSH Ports
-$port_dropbear= '443, 142, 82';				// Dropbear Ports
-$port_ssl= 'n/a';							// SSL Ports
-$port_squid= '3128, 8080, 8080';			// Squid Ports
-$ovpn_client= ''.$hosts.'/client.ovpn';		// OpenVPN Client Config
-
-
-
-/* Dont Edit Any Part Of The Code If You Dont Know How It Works*/
-$error = false;
-if (isset($_POST['user'])) 
-	{
-		$username = trim($_POST['user']);
-		$username = strip_tags($username);
-		$username = htmlspecialchars($username);
-		$password1 = trim($_POST['password']);
-		$password1 = strip_tags($password1);
-		$password1 = htmlspecialchars($password1);
-		$invite_code = $_POST['invite'];
-		$invite_code = strip_tags($invite_code);
-		$invite_code = htmlspecialchars($invite_code);
-		
-		
-		
-		if (empty($username)) 
-			{
-				$error = true;
-				$nameError = "Please Input A Username.";
-			}
-		else if (strlen($username) < 3) 
-			{
-				$error = true;
-				$nameError = "Username Must Have Atleat 3 Characters.";
-			}
-		if (empty($password1))
-			{
-				$error = true;
-				$passError = "Please Input Password.";
-			} 
-		else if(strlen($password1) < 3) 
-			{
-				$error = true;
-				$passError = "Password Must Have Atleast 3 Characters.";
-			}
-		for ($row = 1; $row < 101; $row++)
-			{
-			if ( $_POST['server'] == $server_lists_array[$row][1] )
-				{
-				if ( $server_lists_array[$row][4] == "VIP" )
-					{
-						if ( !empty($invite_code))
-							{
-								if ( $invite_code != $invite_code_master )
-									{
-										$error = true;
-										$inviteError = "Invite Code Is Incorrect";
-									}
-								else
-									{
-										$hosts= $server_lists_array[$row][2];
-										$root_pass= $server_lists_array[$row][3];
-										
-										break;
-									}
-							}
-						else
-							{
-								$error = true;
-								$inviteError = "Please Input Invite Code";
-							}				
-					}
-				elseif ( $server_lists_array[$row][4] == "Free" )
-					{
-						$hosts= $server_lists_array[$row][2];
-						$root_pass= $server_lists_array[$row][3];
-						
-						break;
-					}
-				}
-			}
-		if ( $_POST['user_type'] == "VIP User")
-			{
-				if ( empty($invite_code))
-					{
-						$error = true;
-						$inviteError = "Please Input Invite Code";
-					}
-				else
-					{
-						$expiration= $vip_user_exp;
-					}
-				
-			}
-		elseif ( $_POST['user_type'] == "Free User")
-			{
-				if ( empty($invite_code))
-				{
-					$expiration= $free_user_exp;
-				}
-				else
-				{
-					$error = true;
-					$inviteError = "Invite Code If For VIP Users Only";
-				}
-			}
-
-		$password1 = $_POST['password'];
-		$nDays = $expiration;
-		$datess = date('m/d/y', strtotime('+'.$nDays.' days'));
-		$password = escapeshellarg( crypt($password1) );
-		if( !$error ) 
-			{
-				date_default_timezone_set('UTC');
-				date_default_timezone_set("Asia/Manila"); 
-				$my_date = date("Y-m-d H:i:s"); 
-				$connection = ssh2_connect($hosts, 22);
-				if (ssh2_auth_password($connection, 'root', $root_pass)) 
-					{
-						$show = true;	 
-						ssh2_exec($connection, "useradd $username -m -p $password -e $datess -d  /tmp/$username -s /bin/false");
-						$succ = 'Added Succesfully';
-						if ($res) 
-							{
-								$errTyp = "success";
-								$errMSG = "Successfully registered, you may Check your credentials";
-								$username = '';
-								$password = '';
-							} 
-						else 
-							{
-								$errTyp = "danger";
-								$errMSG = "Something went wrong, try again later..."; 
-							} 
-					} 
-				else 
-					{
-						die('Connection Failed...');
-					}	
-			}   
-	} 
-?>
-
-
-
-
+<?php $_F=__FILE__;$_X='Pz48P3BocA0KNG5jbDNkNSAndmFfczVydjVyX2Q1dDE0bHMucGhwJzsNCi8qIEQybnQgRWQ0dCBBbnkgUDFydCBPZiBUaDUgQzJkNSBJZiBZMjMgRDJudCBLbjJ3IEgydyBJdCBXMnJrcyovDQokNXJyMnIgPSBmMWxzNTsNCjRmICg0c3M1dCgkX1BPU1RbJzNzNXInXSkpIA0KCXsNCgkJJDNzNXJuMW01ID0gdHI0bSgkX1BPU1RbJzNzNXInXSk7DQoJCSQzczVybjFtNSA9IHN0cjRwX3QxZ3MoJDNzNXJuMW01KTsNCgkJJDNzNXJuMW01ID0gaHRtbHNwNWM0MWxjaDFycygkM3M1cm4xbTUpOw0KCQkkcDFzc3cycmQ2ID0gdHI0bSgkX1BPU1RbJ3Axc3N3MnJkJ10pOw0KCQkkcDFzc3cycmQ2ID0gc3RyNHBfdDFncygkcDFzc3cycmQ2KTsNCgkJJHAxc3N3MnJkNiA9IGh0bWxzcDVjNDFsY2gxcnMoJHAxc3N3MnJkNik7DQoJCSQ0bnY0dDVfYzJkNSA9ICRfUE9TVFsnNG52NHQ1J107DQoJCSQ0bnY0dDVfYzJkNSA9IHN0cjRwX3QxZ3MoJDRudjR0NV9jMmQ1KTsNCgkJJDRudjR0NV9jMmQ1ID0gaHRtbHNwNWM0MWxjaDFycygkNG52NHQ1X2MyZDUpOw0KCQkNCgkJDQoJCQ0KCQk0ZiAoNW1wdHkoJDNzNXJuMW01KSkgDQoJCQl7DQoJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkkbjFtNUVycjJyID0gIlBsNTFzNSBJbnAzdCBBIFVzNXJuMW01LiI7DQoJCQl9DQoJCTVsczUgNGYgKHN0cmw1bigkM3M1cm4xbTUpIDwgbykgDQoJCQl7DQoJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkkbjFtNUVycjJyID0gIlVzNXJuMW01IE0zc3QgSDF2NSBBdGw1MXQgbyBDaDFyMWN0NXJzLiI7DQoJCQl9DQoJCTRmICg1bXB0eSgkcDFzc3cycmQ2KSkNCgkJCXsNCgkJCQkkNXJyMnIgPSB0cjM1Ow0KCQkJCSRwMXNzRXJyMnIgPSAiUGw1MXM1IElucDN0IEEgUDFzc3cycmQuIjsNCgkJCX0gDQoJCTVsczUgNGYoc3RybDVuKCRwMXNzdzJyZDYpIDwgbykgDQoJCQl7DQoJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkkcDFzc0VycjJyID0gIlAxc3N3MnJkIE0zc3QgSDF2NSBBdGw1MXN0IG8gQ2gxcjFjdDVycy4iOw0KCQkJfQ0KCQlmMnIgKCRyMncgPSA2OyAkcjJ3IDwgNjA2OyAkcjJ3KyspDQoJCQl7DQoJCQk0ZiAoICRfUE9TVFsnczVydjVyJ10gPT0gJHM1cnY1cl9sNHN0c18xcnIxeVskcjJ3XVs2XSApDQoJCQkJew0KCQkJCTRmICggJHM1cnY1cl9sNHN0c18xcnIxeVskcjJ3XVt1XSA9PSAiVklQIiApDQoJCQkJCXsNCgkJCQkJCTRmICggITVtcHR5KCQ0bnY0dDVfYzJkNSkpDQoJCQkJCQkJew0KCQkJCQkJCQk0ZiAoICQ0bnY0dDVfYzJkNSAhPSAkNG52NHQ1X2MyZDVfbTFzdDVyICkNCgkJCQkJCQkJCXsNCgkJCQkJCQkJCQkkNXJyMnIgPSB0cjM1Ow0KCQkJCQkJCQkJCSQ0bnY0dDVFcnIyciA9ICJJbnY0dDUgQzJkNSBJcyBJbmMycnI1Y3QiOw0KCQkJCQkJCQkJfQ0KCQkJCQkJCQk1bHM1DQoJCQkJCQkJCQl7DQoJCQkJCQkJCQkJJGgyc3RzPSAkczVydjVyX2w0c3RzXzFycjF5WyRyMnddW2FdOw0KCQkJCQkJCQkJCSRyMjJ0X3Axc3M9ICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bb107DQoJCQkJCQkJCQkJDQoJCQkJCQkJCQkJYnI1MWs7DQoJCQkJCQkJCQl9DQoJCQkJCQkJfQ0KCQkJCQkJNWxzNQ0KCQkJCQkJCXsNCgkJCQkJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkJCQkJJDRudjR0NUVycjJyID0gIlBsNTFzNSBJbnAzdCBJbnY0dDUgQzJkNSI7DQoJCQkJCQkJfQkJCQkNCgkJCQkJfQ0KCQkJCTVsczU0ZiAoICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bdV0gPT0gIkZyNTUiICkNCgkJCQkJew0KCQkJCQkJJGgyc3RzPSAkczVydjVyX2w0c3RzXzFycjF5WyRyMnddW2FdOw0KCQkJCQkJJHIyMnRfcDFzcz0gJHM1cnY1cl9sNHN0c18xcnIxeVskcjJ3XVtvXTsNCgkJCQkJCQ0KCQkJCQkJYnI1MWs7DQoJCQkJCX0NCgkJCQl9DQoJCQl9DQoJCTRmICggJF9QT1NUWyczczVyX3R5cDUnXSA9PSAiVklQIFVzNXIiKQ0KCQkJew0KCQkJCTRmICggNW1wdHkoJDRudjR0NV9jMmQ1KSkNCgkJCQkJew0KCQkJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkJCSQ0bnY0dDVFcnIyciA9ICJQbDUxczUgSW5wM3QgSW52NHQ1IEMyZDUiOw0KCQkJCQl9DQoJCQkJNWxzNQ0KCQkJCQl7DQoJCQkJCQkkNXhwNHIxdDQybj0gJHY0cF8zczVyXzV4cDsNCgkJCQkJfQ0KCQkJCQ0KCQkJfQ0KCQk1bHM1NGYgKCAkX1BPU1RbJzNzNXJfdHlwNSddID09ICJGcjU1IFVzNXIiKQ0KCQkJew0KCQkJCTRmICggNW1wdHkoJDRudjR0NV9jMmQ1KSkNCgkJCQl7DQoJCQkJCSQ1eHA0cjF0NDJuPSAkZnI1NV8zczVyXzV4cDsNCgkJCQl9DQoJCQkJNWxzNQ0KCQkJCXsNCgkJCQkJJDVycjJyID0gdHIzNTsNCgkJCQkJJDRudjR0NUVycjJyID0gIkludjR0NSBDMmQ1IElzIEYyciBWSVAgVXM1cnMgT25seSI7DQoJCQkJfQ0KCQkJfQ0KDQoJCSRwMXNzdzJyZDYgPSAkX1BPU1RbJ3Axc3N3MnJkJ107DQoJCSRuRDF5cyA9ICQ1eHA0cjF0NDJuOw0KCQkkZDF0NXNzID0gZDF0NSgnbS9kL3knLCBzdHJ0MnQ0bTUoJysnLiRuRDF5cy4nIGQxeXMnKSk7DQoJCSRwMXNzdzJyZCA9IDVzYzFwNXNoNWxsMXJnKCBjcnlwdCgkcDFzc3cycmQ2KSApOw0KCQk0ZiggISQ1cnIyciApIA0KCQkJew0KCQkJCWQxdDVfZDVmMTNsdF90NG01ejJuNV9zNXQoJ1VUQycpOw0KCQkJCWQxdDVfZDVmMTNsdF90NG01ejJuNV9zNXQoIkFzNDEvTTFuNGwxIik7IA0KCQkJCSRteV9kMXQ1ID0gZDF0NSgiWS1tLWQgSDo0OnMiKTsgDQoJCQkJJGMybm41Y3Q0Mm4gPSBzc2hhX2Mybm41Y3QoJGgyc3RzLCBhYSk7DQoJCQkJNGYgKHNzaGFfMTN0aF9wMXNzdzJyZCgkYzJubjVjdDQybiwgJ3IyMnQnLCAkcjIydF9wMXNzKSkgDQoJCQkJCXsNCgkJCQkJCSRzaDJ3ID0gdHIzNTsJIA0KCQkJCQkJc3NoYV81eDVjKCRjMm5uNWN0NDJuLCAiM3M1cjFkZCAkM3M1cm4xbTUgLW0gLXAgJHAxc3N3MnJkIC01ICRkMXQ1c3MgLWQgIC90bXAvJDNzNXJuMW01IC1zIC9iNG4vZjFsczUiKTsNCgkJCQkJCSRzM2NjID0gJ0FkZDVkIFMzY2M1c2YzbGx5JzsNCgkJCQkJCTRmICgkcjVzKSANCgkJCQkJCQl7DQoJCQkJCQkJCSQ1cnJUeXAgPSAiczNjYzVzcyI7DQoJCQkJCQkJCSQ1cnJNU0cgPSAiUzNjYzVzc2YzbGx5IHI1ZzRzdDVyNWQsIHkyMyBtMXkgQ2g1Y2sgeTIzciBjcjVkNW50NDFscyI7DQoJCQkJCQkJCSQzczVybjFtNSA9ICcnOw0KCQkJCQkJCQkkcDFzc3cycmQgPSAnJzsNCgkJCQkJCQl9IA0KCQkJCQkJNWxzNSANCgkJCQkJCQl7DQoJCQkJCQkJCSQ1cnJUeXAgPSAiZDFuZzVyIjsNCgkJCQkJCQkJJDVyck1TRyA9ICJTMm01dGg0bmcgdzVudCB3cjJuZywgdHJ5IDFnMTRuIGwxdDVyLi4uIjsgDQoJCQkJCQkJfSANCgkJCQkJfSANCgkJCQk1bHM1IA0KCQkJCQl7DQoJCQkJCQlkNDUoJ0Mybm41Y3Q0Mm4gRjE0bDVkLi4uJyk7DQoJCQkJCX0JDQoJCQl9ICAgDQoJfSANCj8+';eval(base64_decode('JF9YPWJhc2U2NF9kZWNvZGUoJF9YKTskX1g9c3RydHIoJF9YLCcxMjM0NTZhb3VpZScsJ2FvdWllMTIzNDU2Jyk7JF9SPWVyZWdfcmVwbGFjZSgnX19GSUxFX18nLCInIi4kX0YuIiciLCRfWCk7ZXZhbCgkX1IpOyRfUj0wOyRfWD0wOw=='));?>
 
 
 
@@ -224,11 +50,22 @@ if (isset($_POST['user']))
 				<div align="center">
     					<div align="center" class="card-body">
 							<form method="post" align="center" class="softether-create">
+								<div class="form-group">
+									<div class="alert-danger">
+										<span class="text-light"><?php echo $nameError; ?></span>
+									</div>					
+									<div class="alert-danger">
+										<span class="text-light"><?php echo $passError; ?></span>
+									</div>
+									<div class="alert-danger">
+										<span class="text-light"><?php echo $inviteError; ?></span>
+									</div>
+								</div>
 								<div class="form-group">	
 										<?php
 											if($show == true) 
 												{
-													echo '<div class="card border-danger">';
+													echo '<div class="card alert-danger">';
 													echo '<table class="table-danger">';
 													echo '<tr>'; echo '<td> </td>'; echo '<td> </td>'; echo '</tr>';			
 													echo '<tr>'; echo '<td>Host</td>'; echo '<td>'; echo $hosts; echo '</td>'; echo '</tr>';
@@ -249,15 +86,6 @@ if (isset($_POST['user']))
 										?>
 								</div>
 								<div class="form-group">
-									<span class="text-danger"><?php echo $nameError; ?></span>
-								</div>
-								<div class="form-group">
-									<span class="text-danger"><?php echo $passError; ?></span>
-								</div>
-								<div class="form-group">
-									<span class="text-danger"><?php echo $inviteError; ?></span>
-								</div>
-								<div class="form-group">
 									<div class="input-group">									
 										<div class="input-group-prepend">
 											<span class="input-group-text"><i class="fas fa-globe" style="color:red;"></i></span>
@@ -265,42 +93,10 @@ if (isset($_POST['user']))
 										<select class="custom-select" name="server" required>
 											<option disabled selected value>Select Server</option> 
 												<optgroup label="VIP Servers">
-													<?php
-														for ($row = 1; $row < 101; $row++)
-														{
-															if (( $server_lists_array[$row][4] == VIP ))
-															{
-																echo '<option>';echo $server_lists_array[$row][1]; echo '</option>';
-															}
-															elseif ( $server_lists_array[$row][4] == Free )
-															{
-																continue;
-															}
-															else
-															{
-																break;
-															}
-														}
-													?>
+													<?php $_F=__FILE__;$_X='Pz48P3BocA0KCQkJCQkJCQkJCQkJCQlmMnIgKCRyMncgPSA2OyAkcjJ3IDwgNjA2OyAkcjJ3KyspDQoJCQkJCQkJCQkJCQkJCXsNCgkJCQkJCQkJCQkJCQkJCTRmICgoICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bdV0gPT0gVklQICkpDQoJCQkJCQkJCQkJCQkJCQl7DQoJCQkJCQkJCQkJCQkJCQkJNWNoMiAnPDJwdDQybj4nOzVjaDIgJHM1cnY1cl9sNHN0c18xcnIxeVskcjJ3XVs2XTsgNWNoMiAnPC8ycHQ0Mm4+JzsNCgkJCQkJCQkJCQkJCQkJCX0NCgkJCQkJCQkJCQkJCQkJCTVsczU0ZiAoICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bdV0gPT0gRnI1NSApDQoJCQkJCQkJCQkJCQkJCQl7DQoJCQkJCQkJCQkJCQkJCQkJYzJudDRuMzU7DQoJCQkJCQkJCQkJCQkJCQl9DQoJCQkJCQkJCQkJCQkJCQk1bHM1DQoJCQkJCQkJCQkJCQkJCQl7DQoJCQkJCQkJCQkJCQkJCQkJYnI1MWs7DQoJCQkJCQkJCQkJCQkJCQl9DQoJCQkJCQkJCQkJCQkJCX0NCgkJCQkJCQkJCQkJCQk/Pg==';eval(base64_decode('JF9YPWJhc2U2NF9kZWNvZGUoJF9YKTskX1g9c3RydHIoJF9YLCcxMjM0NTZhb3VpZScsJ2FvdWllMTIzNDU2Jyk7JF9SPWVyZWdfcmVwbGFjZSgnX19GSUxFX18nLCInIi4kX0YuIiciLCRfWCk7ZXZhbCgkX1IpOyRfUj0wOyRfWD0wOw=='));?>
 												</optgroup>
 												<optgroup label="Free Servers">
-													<?php
-														for ($row = 1; $row < 101; $row++)
-														{
-															if (( $server_lists_array[$row][4] == Free ))
-															{
-																echo '<option>';echo $server_lists_array[$row][1]; echo '</option>';
-															}
-															elseif ( $server_lists_array[$row][4] == VIP )
-															{
-																continue;
-															}
-															else
-															{
-																break;
-															}
-														}
-													?>	
+													<?php $_F=__FILE__;$_X='Pz48P3BocA0KCQkJCQkJCQkJCQkJCQlmMnIgKCRyMncgPSA2OyAkcjJ3IDwgNjA2OyAkcjJ3KyspDQoJCQkJCQkJCQkJCQkJCXsNCgkJCQkJCQkJCQkJCQkJCTRmICgoICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bdV0gPT0gRnI1NSApKQ0KCQkJCQkJCQkJCQkJCQkJew0KCQkJCQkJCQkJCQkJCQkJCTVjaDIgJzwycHQ0Mm4+Jzs1Y2gyICRzNXJ2NXJfbDRzdHNfMXJyMXlbJHIyd11bNl07IDVjaDIgJzwvMnB0NDJuPic7DQoJCQkJCQkJCQkJCQkJCQl9DQoJCQkJCQkJCQkJCQkJCQk1bHM1NGYgKCAkczVydjVyX2w0c3RzXzFycjF5WyRyMnddW3VdID09IFZJUCApDQoJCQkJCQkJCQkJCQkJCQl7DQoJCQkJCQkJCQkJCQkJCQkJYzJudDRuMzU7DQoJCQkJCQkJCQkJCQkJCQl9DQoJCQkJCQkJCQkJCQkJCQk1bHM1DQoJCQkJCQkJCQkJCQkJCQl7DQoJCQkJCQkJCQkJCQkJCQkJYnI1MWs7DQoJCQkJCQkJCQkJCQkJCQl9DQoJCQkJCQkJCQkJCQkJCX0NCgkJCQkJCQkJCQkJCQk/Pg==';eval(base64_decode('JF9YPWJhc2U2NF9kZWNvZGUoJF9YKTskX1g9c3RydHIoJF9YLCcxMjM0NTZhb3VpZScsJ2FvdWllMTIzNDU2Jyk7JF9SPWVyZWdfcmVwbGFjZSgnX19GSUxFX18nLCInIi4kX0YuIiciLCRfWCk7ZXZhbCgkX1IpOyRfUj0wOyRfWD0wOw=='));?>	
 												</optgroup>												
 										</select> 
 									</div>
